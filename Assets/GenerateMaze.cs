@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -19,7 +18,17 @@ public class GenerateMaze : MonoBehaviour
     private void Start()
     {
         generateGrid();
-        removeWallAt(new Vector3(6, 10, 5));
+        //removeWallAt(new Vector3(6, 10, 5));
+        testRandomUnivisitedNeighbor();
+    }
+
+    private void testRandomUnivisitedNeighbor()
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            Vector3? randomNeighborLocation = getRandomUnvisitedNeighbor(new Vector3(9, wallY, 9));
+            Instantiate(debugCube, (Vector3)randomNeighborLocation, Quaternion.identity, transform);
+        }
     }
 
     private void testUnvisitedNeighbors()
@@ -94,16 +103,22 @@ public class GenerateMaze : MonoBehaviour
         return unvisitedNeighbors;
     }
 
-    private Vector3 getRandomUnvisitedNeighbor(Vector3 cell)
+    private Vector3? getRandomUnvisitedNeighbor(Vector3 cell)
     {
         List<Vector3> unvisitedNeighbors = getUnvisitedNeighbors(cell);
 
         if(unvisitedNeighbors.Count == 0)
         {
-            //return null;
+            return null;
         }
 
-        return Vector3.up;
+        Debug.Log("Picking a random neighbors from 0 to " + unvisitedNeighbors.Count);
+
+        int randomIndex = Random.Range(0, unvisitedNeighbors.Count);
+
+        Debug.Log("We chose " + randomIndex);
+
+        return unvisitedNeighbors[randomIndex];
     }
 
     private bool cellIsInMazeArea(Vector3 cell)
