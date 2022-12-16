@@ -9,26 +9,31 @@ public class GenerateMaze : MonoBehaviour
     public GameObject wallPrefab;
     public GameObject debugCube;
     public int mazeSize = 22;
-    public float wallY = 1.5f;
+    public float wallY;
     private HashSet<Vector3> visitedCells = new HashSet<Vector3>();
 
     private int recursiveCounter = 0;
     private float cellWidth; //Width runs on the x-axis
     private float cellLength; // Length runs on the z-axis
-    private float[] xOffset = { 0, 2, -2, 0 };
-    private float[] zOffset = { 2, 0, 0, -2 };
+    private float cellHeight;
+    private float[] xOffset;
+    private float[] zOffset;
 
     private void Start()
     {
         //define the cell width and length
         cellWidth = wallPrefab.transform.localScale.x;
+        cellHeight = wallPrefab.transform.localScale.y;
         cellLength = wallPrefab.transform.localScale.z;
+        wallY = cellHeight / 2;
 
+        xOffset = new float[] { 0, 2 * cellWidth, -2 * cellWidth, 0};
+        zOffset = new float[] { 2 * cellLength, 0, 0, -2 * cellLength };
         Debug.Log("width and length is " + cellWidth + " " + cellLength);
 
         generateGrid();
-        processCell(new Vector3(mazeSize/2, wallY, mazeSize / 2));
-        //createExit();
+        processCell(new Vector3((mazeSize * cellWidth) / 2, wallY, (mazeSize * cellLength) / 2));
+        createExit();
     }
 
     private void processCell(Vector3 cell) {
@@ -48,16 +53,16 @@ public class GenerateMaze : MonoBehaviour
 
     private void createExit() {
         //Removing the topright corner from the maze
-        removeWallAt(new Vector3(mazeSize, wallY, mazeSize));
-        removeWallAt(new Vector3(mazeSize - 1, wallY, mazeSize));
-        removeWallAt(new Vector3(mazeSize, wallY, mazeSize - 1));
+        removeWallAt(new Vector3(mazeSize * cellWidth, wallY, mazeSize * cellLength));
+        removeWallAt(new Vector3((mazeSize * cellWidth) - cellWidth, wallY, mazeSize * cellLength));
+        removeWallAt(new Vector3(mazeSize * cellWidth, wallY, (mazeSize * cellLength) - cellLength));
     }
 
     private void testRandomUnivisitedNeighbor()
     {
         for(int i = 0; i < 10; i++)
         {
-            Vector3? randomNeighborLocation = getRandomUnvisitedNeighbor(new Vector3(9, wallY, 9));
+            Vector3? randomNeighborLocation = getRandomUnvisitedNeighbor(new Vector3(10, wallY, 10));
             Instantiate(debugCube, (Vector3)randomNeighborLocation, Quaternion.identity, transform);
         }
     }
@@ -171,7 +176,7 @@ public class GenerateMaze : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(cell + new Vector3(0, 10, 0), Vector3.down, out hit))
+        if (Physics.Raycast(cell + new Vector3(0, cellHeight, 0), Vector3.down, out hit))
         {
             print("found an object - distance: " + hit.distance);
             print("found an object - objectname: " + hit.collider.gameObject);

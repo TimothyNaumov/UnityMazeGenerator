@@ -500,7 +500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1242146321219380953, guid: 318969255d697b844b95e54d9ab78b64, type: 3}
   debugCube: {fileID: 6140054853217349120, guid: 31cb5bbc6ccb6e842b8cf4da6ad3fe9e, type: 3}
-  mazeSize: 22
+  mazeSize: 18
   wallY: 1.5
 --- !u!4 &1359807461
 Transform:
